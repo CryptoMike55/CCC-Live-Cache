@@ -148,77 +148,21 @@
       color: var(--text-main);
     }
 
-    .meta-row {
+    .progress-track {
+      margin-top: 18px;
+      padding: 10px 12px 6px;
+      border-radius: 12px;
+      background: rgba(4, 5, 16, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .progress-top {
       display: flex;
       justify-content: space-between;
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .meta-row span strong {
-      color: var(--text-main);
-    }
-
-    .footer {
-      margin-top: 18px;
+      align-items: baseline;
       font-size: 11px;
       color: var(--text-muted);
-      text-align: center;
+      margin-bottom: 6px;
     }
 
-    .footer span {
-      opacity: 0.85;
-    }
-
-    .footer strong {
-      color: var(--accent);
-      font-weight: 600;
-    }
-  </style>
-</head>
-<body>
-  <div class="glow-ring"></div>
-
-  <div class="wrapper">
-    <div class="header-row">
-      <div class="header-row-main">
-        <div class="logo">
-          <img src="CCC 192.png" alt="Crazy Critters Cache" />
-        </div>
-        <div>
-          <div class="project-pill">
-            <span class="dot"></span>
-            <span>Crazy Critters of Cronos</span>
-          </div>
-          <h1>Live Burn Cache</h1>
-        </div>
-      </div>
-    </div>
-
-    <p class="subtitle">
-      Real‑time tracker of the global $MOON rewards cache for Crazy Critters burns.
-    </p>
-
-    <div class="value-row">
-      <span id="burn-cache-value" class="value">0.00</span>
-      <span class="label">$MOON</span>
-    </div>
-
-    <div class="meta-row">
-      <span>
-        Remaining cache:&nbsp;
-        <strong id="remaining-value">1,000,000</strong> $MOON
-      </span>
-      <span id="last-updated">Last update: —</span>
-    </div>
-
-    <div class="footer">
-      <div>Updates every 5 seconds from Cronos RPC.</div>
-      <div><span>Built by</span> <strong>DeFi Mike</strong></div>
-    </div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
-</html>
+    .progress-bar {
