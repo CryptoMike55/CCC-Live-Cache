@@ -233,7 +233,7 @@
         <div id="errorMessage"></div>
     </div>
 
-    <script src="https://cdn.ethers.io/lib/ethers-5.7.2.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <script>
         // Configuration
         const BURN_CONTRACT = '0x807D0DE6FE5bf18A82E9B925EEd8fa18e6AD200D';
@@ -333,8 +333,20 @@
             document.getElementById('errorMessage').innerHTML = '';
         }
         
-        // Start the app
-        init();
+        // Start the app when ethers is loaded
+        if (typeof ethers !== 'undefined') {
+            init();
+        } else {
+            showError('Loading blockchain library...');
+            setTimeout(() => {
+                if (typeof ethers !== 'undefined') {
+                    init();
+                } else {
+                    showError('Failed to load blockchain library. Please refresh the page.');
+                }
+            }, 2000);
+        }
     </script>
 </body>
 </html>
+
