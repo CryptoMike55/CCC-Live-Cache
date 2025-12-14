@@ -42,18 +42,11 @@
       z-index: 0;
     }
 
-    .page {
+    .wrapper {
       position: relative;
       z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
       width: 100%;
       max-width: 520px;
-    }
-
-    .wrapper {
-      width: 100%;
       padding: 28px 26px 24px;
       border-radius: 22px;
       background:
@@ -121,7 +114,6 @@
       margin: 4px 0 4px;
       font-size: 26px;
       letter-spacing: 0.02em;
-      color: --accent;
       color: var(--accent);
     }
 
@@ -183,56 +175,50 @@
       color: var(--accent);
       font-weight: 600;
     }
+  </style>
+</head>
+<body>
+  <div class="glow-ring"></div>
 
-    /* $MOON market card */
+  <div class="wrapper">
+    <div class="header-row">
+      <div class="header-row-main">
+        <div class="logo">
+          <img src="CCC 192.png" alt="Crazy Critters Cache" />
+        </div>
+        <div>
+          <div class="project-pill">
+            <span class="dot"></span>
+            <span>Crazy Critters of Cronos</span>
+          </div>
+          <h1>Live Burn Cache</h1>
+        </div>
+      </div>
+    </div>
 
-    .market-card {
-      padding-top: 20px;
-      padding-bottom: 18px;
-    }
+    <p class="subtitle">
+      Real‑time tracker of the global $MOON rewards cache for Crazy Critters burns.
+    </p>
 
-    .market-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 10px;
-    }
+    <div class="value-row">
+      <span id="burn-cache-value" class="value">0.00</span>
+      <span class="label">$MOON</span>
+    </div>
 
-    .market-title {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-main);
-    }
+    <div class="meta-row">
+      <span>
+        Remaining cache:&nbsp;
+        <strong id="remaining-value">1,000,000</strong> $MOON
+      </span>
+      <span id="last-updated">Last update: —</span>
+    </div>
 
-    .market-link {
-      font-size: 11px;
-      color: var(--accent);
-      text-decoration: none;
-      opacity: 0.9;
-    }
-    .market-link:hover {
-      text-decoration: underline;
-    }
+    <div class="footer">
+      <div>Updates every 5 seconds from Cronos RPC.</div>
+      <div><span>Built by</span> <strong>DeFi Mike</strong></div>
+    </div>
+  </div>
 
-    .market-main-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .market-price-block,
-    .market-change-block {
-      flex: 1;
-    }
-
-    .market-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .market-price {
+  <script src="app.js"></script>
+</body>
+</html>
