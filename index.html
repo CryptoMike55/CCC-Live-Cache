@@ -42,11 +42,18 @@
       z-index: 0;
     }
 
-    .wrapper {
+    .page {
       position: relative;
       z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
       width: 100%;
       max-width: 520px;
+    }
+
+    .wrapper {
+      width: 100%;
       padding: 28px 26px 24px;
       border-radius: 22px;
       background:
@@ -114,6 +121,7 @@
       margin: 4px 0 4px;
       font-size: 26px;
       letter-spacing: 0.02em;
+      color: --accent;
       color: var(--accent);
     }
 
@@ -143,4 +151,88 @@
     }
 
     .label {
-      font-size
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .meta-row span strong {
+      color: var(--text-main);
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer span {
+      opacity: 0.85;
+    }
+
+    .footer strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* $MOON market card */
+
+    .market-card {
+      padding-top: 20px;
+      padding-bottom: 18px;
+    }
+
+    .market-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .market-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .market-link {
+      font-size: 11px;
+      color: var(--accent);
+      text-decoration: none;
+      opacity: 0.9;
+    }
+    .market-link:hover {
+      text-decoration: underline;
+    }
+
+    .market-main-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .market-price-block,
+    .market-change-block {
+      flex: 1;
+    }
+
+    .market-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .market-price {
