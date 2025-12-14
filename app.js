@@ -9,10 +9,8 @@ const TARGET_MOON = 1_000_000;
 function formatMoon(valueWei) {
   const decimals = 18n;
   const divisor = 10n ** decimals;
-
   const whole = valueWei / divisor;
   const fraction = valueWei % divisor;
-
   const fractionStr = (fraction * 100n / divisor).toString().padStart(2, "0");
   return `${whole.toString()}.${fractionStr}`;
 }
@@ -24,10 +22,7 @@ async function fetchBurnCache() {
       id: 1,
       method: "eth_call",
       params: [
-        {
-          to: MULTICALL_TO,
-          data: MULTICALL_DATA
-        },
+        { to: MULTICALL_TO, data: MULTICALL_DATA },
         "latest"
       ]
     };
@@ -44,18 +39,33 @@ async function fetchBurnCache() {
     const lastWord = "0x" + resultHex.slice(-64);
     const valueWei = BigInt(lastWord);
 
+    // Main cache value
     const display = formatMoon(valueWei);
     const burnEl = document.getElementById("burn-cache-value");
     if (burnEl) burnEl.textContent = display;
 
+    // Whole MOON
     const decimals = 18n;
     const divisor = 10n ** decimals;
     const moonWhole = Number(valueWei / divisor);
 
+    // Progress
+    let percent = 0;
+    if (!Number.isNaN(moonWhole) && Number.isFinite(moonWhole)) {
+      percent = Math.min(100, (moonWhole / TARGET_MOON) * 100);
+    }
+    const percentText = `${percent.toFixed(1)}%`;
+    const percentEl = document.getElementById("progress-percent");
+    const fillEl = document.getElementById("progress-fill");
+    if (percentEl) percentEl.textContent = percentText;
+    if (fillEl) fillEl.style.width = `${percent}%`;
+
+    // Remaining cache
     const remaining = Math.max(0, TARGET_MOON - moonWhole);
     const remainingEl = document.getElementById("remaining-value");
     if (remainingEl) remainingEl.textContent = remaining.toLocaleString();
 
+    // Last updated
     const now = new Date();
     const ts = now.toLocaleTimeString(undefined, {
       hour: "2-digit",
