@@ -1,360 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CCC Burn Cache Tracker</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-            color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-        }
-        
-        .header {
-            margin-bottom: 40px;
-        }
-        
-        h1 {
-            font-size: 2.5em;
-            color: #ff0000;
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-        }
-        
-        .subtitle {
-            color: #888;
-            font-size: 1.1em;
-        }
-        
-        .cache-display {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid #ff0000;
-            border-radius: 20px;
-            padding: 40px 20px;
-            margin: 30px 0;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
-        }
-        
-        .cache-label {
-            color: #888;
-            font-size: 1em;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .cache-amount {
-            font-size: 3.5em;
-            font-weight: bold;
-            color: #ffffff;
-            margin: 10px 0;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-        
-        .cache-unit {
-            font-size: 1.5em;
-            color: #ff0000;
-            font-weight: normal;
-        }
-        
-        .progress-section {
-            margin: 30px 0;
-        }
-        
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            color: #888;
-        }
-        
-        .progress-bar-container {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            height: 30px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 0, 0, 0.3);
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #ff0000 0%, #ff6666 100%);
-            transition: width 0.5s ease;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
-            color: white;
-            font-weight: bold;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin: 30px 0;
-        }
-        
-        .stat-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .stat-label {
-            color: #888;
-            font-size: 0.9em;
-            margin-bottom: 8px;
-        }
-        
-        .stat-value {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #ff0000;
-        }
-        
-        .last-updated {
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 20px;
-        }
-        
-        .refresh-btn {
-            background: #ff0000;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 30px;
-            font-size: 1em;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-        }
-        
-        .refresh-btn:hover {
-            background: #cc0000;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
-        }
-        
-        .refresh-btn:active {
-            transform: translateY(0);
-        }
-        
-        .loading {
-            color: #888;
-            font-style: italic;
-        }
-        
-        .error {
-            color: #ff6666;
-            background: rgba(255, 0, 0, 0.1);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-        }
-        
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2em;
-            }
-            
-            .cache-amount {
-                font-size: 2.5em;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>CCC Live Burn Cache Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="manifest.json" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #050505;
+      color: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .wrapper {
+      text-align: center;
+      padding: 32px 24px;
+      background: #121212;
+      border-radius: 16px;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.35);
+      max-width: 480px;
+      width: 100%;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      color: #ff3b3b;
+    }
+    p {
+      margin: 0 0 24px;
+      color: #bbbbbb;
+    }
+    .value {
+      font-size: 40px;
+      font-weight: 700;
+      color: #ff3b3b;
+      letter-spacing: 1px;
+    }
+    .label {
+      font-size: 16px;
+      color: #ff3b3b;
+      margin-left: 6px;
+    }
+    .meta {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #777;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🦡 Crazy Critters</h1>
-            <div class="subtitle">Live Burn Cache Tracker</div>
-        </div>
-        
-        <div class="cache-display">
-            <div class="cache-label">Current Burn Cache</div>
-            <div class="cache-amount" id="cacheAmount">
-                <span class="loading">Loading...</span>
-            </div>
-        </div>
-        
-        <div class="progress-section">
-            <div class="progress-label">
-                <span>Progress to 1M MOON Target</span>
-                <span id="progressPercent">0%</span>
-            </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progressBar" style="width: 0%"></div>
-            </div>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-label">Remaining to Target</div>
-                <div class="stat-value" id="remaining">-</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Next Update</div>
-                <div class="stat-value" id="countdown">5s</div>
-            </div>
-        </div>
-        
-        <button class="refresh-btn" onclick="fetchBurnCache()">↻ Refresh Now</button>
-        
-        <div class="last-updated" id="lastUpdated">Never updated</div>
-        <div id="errorMessage"></div>
+  <div class="wrapper">
+    <h1>Crazy Critters</h1>
+    <p>Live Burn Cache Tracker</p>
+
+    <div>
+      <span id="burn-cache-value" class="value">0.00</span>
+      <span class="label">MOON</span>
     </div>
 
-    <script>
-        // Configuration
-        const BURN_CONTRACT = '0x807D0DE6FE5bf18A82E9B925EEd8fa18e6AD200D';
-        const MOON_TOKEN = '0x46E2B5423F6ff46A8A35861EC9DAfF26af77AB9A';
-        const CRONOS_RPC = 'https://evm.cronos.org';
-        const TARGET_AMOUNT = 1000000;
-        const UPDATE_INTERVAL = 5000; // 5 seconds
-        
-        let countdownTimer;
-        let nextUpdate = UPDATE_INTERVAL / 1000;
-        
-        // Convert hex to decimal for big numbers
-        function hexToDecimal(hex) {
-            // Remove 0x prefix if present
-            hex = hex.replace('0x', '');
-            
-            // Handle big numbers by splitting into chunks
-            let decimal = BigInt('0x' + hex);
-            // Convert from wei (18 decimals) to MOON
-            let divisor = BigInt('1000000000000000000');
-            let result = Number(decimal) / Number(divisor);
-            return result;
-        }
-        
-        // Fetch burn cache balance using raw RPC call
-        async function fetchBurnCache() {
-            try {
-                // ERC20 balanceOf function signature
-                const functionSignature = '0x70a08231'; // balanceOf(address)
-                const paddedAddress = BURN_CONTRACT.slice(2).padStart(64, '0');
-                const data = functionSignature + paddedAddress;
-                
-                const response = await fetch(CRONOS_RPC, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        id: 1,
-                        method: 'eth_call',
-                        params: [{
-                            to: MOON_TOKEN,
-                            data: data
-                        }, 'latest']
-                    })
-                });
-                
-                const json = await response.json();
-                
-                if (json.error) {
-                    throw new Error(json.error.message);
-                }
-                
-                const balance = hexToDecimal(json.result);
-                updateDisplay(balance);
-                clearError();
-                resetCountdown();
-            } catch (error) {
-                showError('Failed to fetch data: ' + error.message);
-            }
-        }
-        
-        // Update display
-        function updateDisplay(balance) {
-            const formatted = balance.toLocaleString('en-US', {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            });
-            
-            document.getElementById('cacheAmount').innerHTML = 
-                `${formatted} <span class="cache-unit">MOON</span>`;
-            
-            // Calculate progress
-            const progress = (balance / TARGET_AMOUNT) * 100;
-            const progressCapped = Math.min(progress, 100);
-            document.getElementById('progressBar').style.width = progressCapped + '%';
-            document.getElementById('progressPercent').textContent = progressCapped.toFixed(1) + '%';
-            
-            // Calculate remaining
-            const remaining = Math.max(TARGET_AMOUNT - balance, 0);
-            document.getElementById('remaining').textContent = 
-                remaining.toLocaleString('en-US', { maximumFractionDigits: 0 }) + ' MOON';
-            
-            // Update timestamp
-            const now = new Date().toLocaleString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            document.getElementById('lastUpdated').textContent = 'Last updated: ' + now;
-        }
-        
-        // Countdown timer
-        function startCountdown() {
-            countdownTimer = setInterval(() => {
-                nextUpdate--;
-                if (nextUpdate < 0) nextUpdate = UPDATE_INTERVAL / 1000;
-                document.getElementById('countdown').textContent = nextUpdate + 's';
-            }, 1000);
-        }
-        
-        function resetCountdown() {
-            nextUpdate = UPDATE_INTERVAL / 1000;
-        }
-        
-        // Error handling
-        function showError(message) {
-            document.getElementById('errorMessage').innerHTML = 
-                `<div class="error">⚠️ ${message}</div>`;
-        }
-        
-        function clearError() {
-            document.getElementById('errorMessage').innerHTML = '';
-        }
-        
-        // Initialize
-        fetchBurnCache();
-        setInterval(fetchBurnCache, UPDATE_INTERVAL);
-        startCountdown();
-    </script>
+    <div class="meta">
+      Updates every 5 seconds from Cronos RPC.
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
