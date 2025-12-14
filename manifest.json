@@ -1,21 +1,19 @@
 {
-  "name": "Crazy Critters Burn Cache Tracker",
+  "name": "CCC Live Burn Cache Tracker",
   "short_name": "CCC Cache",
-  "description": "Live tracker for Crazy Critters of Cronos burn cache",
-  "start_url": "./index.html",
+  "start_url": ".",
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#ff0000",
-  "orientation": "portrait",
+  "background_color": "#050711",
+  "theme_color": "#ff3737",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "CCC 192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "CCC 512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
