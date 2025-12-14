@@ -233,7 +233,6 @@
         <div id="errorMessage"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
     <script>
         // Configuration
         const BURN_CONTRACT = '0x807D0DE6FE5bf18A82E9B925EEd8fa18e6AD200D';
@@ -242,35 +241,54 @@
         const TARGET_AMOUNT = 1000000;
         const UPDATE_INTERVAL = 5000; // 5 seconds
         
-        // ERC20 ABI for balanceOf
-        const ERC20_ABI = [
-            "function balanceOf(address owner) view returns (uint256)"
-        ];
-        
-        let provider;
-        let moonContract;
         let countdownTimer;
         let nextUpdate = UPDATE_INTERVAL / 1000;
         
-        // Initialize
-        async function init() {
-            try {
-                provider = new ethers.providers.JsonRpcProvider(CRONOS_RPC);
-                moonContract = new ethers.Contract(MOON_TOKEN, ERC20_ABI, provider);
-                await fetchBurnCache();
-                setInterval(fetchBurnCache, UPDATE_INTERVAL);
-                startCountdown();
-            } catch (error) {
-                showError('Failed to initialize: ' + error.message);
-            }
+        // Convert hex to decimal for big numbers
+        function hexToDecimal(hex) {
+            // Remove 0x prefix if present
+            hex = hex.replace('0x', '');
+            
+            // Handle big numbers by splitting into chunks
+            let decimal = BigInt('0x' + hex);
+            // Convert from wei (18 decimals) to MOON
+            let divisor = BigInt('1000000000000000000');
+            let result = Number(decimal) / Number(divisor);
+            return result;
         }
         
-        // Fetch burn cache balance
+        // Fetch burn cache balance using raw RPC call
         async function fetchBurnCache() {
             try {
-                const balance = await moonContract.balanceOf(BURN_CONTRACT);
-                const formattedBalance = parseFloat(ethers.utils.formatUnits(balance, 18));
-                updateDisplay(formattedBalance);
+                // ERC20 balanceOf function signature
+                const functionSignature = '0x70a08231'; // balanceOf(address)
+                const paddedAddress = BURN_CONTRACT.slice(2).padStart(64, '0');
+                const data = functionSignature + paddedAddress;
+                
+                const response = await fetch(CRONOS_RPC, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        jsonrpc: '2.0',
+                        id: 1,
+                        method: 'eth_call',
+                        params: [{
+                            to: MOON_TOKEN,
+                            data: data
+                        }, 'latest']
+                    })
+                });
+                
+                const json = await response.json();
+                
+                if (json.error) {
+                    throw new Error(json.error.message);
+                }
+                
+                const balance = hexToDecimal(json.result);
+                updateDisplay(balance);
                 clearError();
                 resetCountdown();
             } catch (error) {
@@ -333,20 +351,10 @@
             document.getElementById('errorMessage').innerHTML = '';
         }
         
-        // Start the app when ethers is loaded
-        if (typeof ethers !== 'undefined') {
-            init();
-        } else {
-            showError('Loading blockchain library...');
-            setTimeout(() => {
-                if (typeof ethers !== 'undefined') {
-                    init();
-                } else {
-                    showError('Failed to load blockchain library. Please refresh the page.');
-                }
-            }, 2000);
-        }
+        // Initialize
+        fetchBurnCache();
+        setInterval(fetchBurnCache, UPDATE_INTERVAL);
+        startCountdown();
     </script>
 </body>
 </html>
-
