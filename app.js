@@ -90,25 +90,23 @@ async function fetchBurnCache() {
 fetchBurnCache();
 setInterval(fetchBurnCache, 5000);
 
-// --- MOON/WCRO market card from Dexscreener ---
-const MOON_PAIR_API =
-  "https://api.dexscreener.com/latest/dex/pairs/cronos/0x9e5a2f511cfc1eb4a6be528437b9f2ddcaef9975";
+// --- MOON market card via CoinGecko ---
+const MOON_CG_API =
+  "https://api.coingecko.com/api/v3/simple/price?ids=moonflow&vs_currencies=usd&include_24hr_change=true";
 
 async function fetchMoonMarket() {
   try {
-    const res = await fetch(MOON_PAIR_API);
-    if (!res.ok) throw new Error("Dexscreener response not ok");
+    const res = await fetch(MOON_CG_API);
+    if (!res.ok) throw new Error("CoinGecko response not ok");
     const data = await res.json();
 
-    if (!data || !data.pairs || !data.pairs[0]) {
-      throw new Error("Unexpected Dexscreener payload");
+    const coin = data.moonflow;
+    if (!coin || typeof coin.usd !== "number") {
+      throw new Error("Unexpected CoinGecko payload");
     }
 
-    const pair = data.pairs[0];
-    const priceUsd = parseFloat(pair.priceUsd || "0");
-    const change24h = parseFloat(
-      (pair.priceChange && pair.priceChange.h24) || "0"
-    );
+    const priceUsd = coin.usd;
+    const change24h = coin.usd_24h_change || 0;
 
     const priceEl = document.getElementById("moon-price");
     const changeEl = document.getElementById("moon-change");
