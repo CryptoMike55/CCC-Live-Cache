@@ -151,4 +151,3 @@ async function fetchMoonMarket() {
 // Initial load + refresh for MOON market
 fetchMoonMarket();
 setInterval(fetchMoonMarket, 60000);
-
