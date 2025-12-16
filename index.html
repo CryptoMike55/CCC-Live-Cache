@@ -287,9 +287,130 @@
       </div>
     </div>
 
+    <!-- Critters circulation & royalty card -->
+    <div class="wrapper" style="padding:20px 22px 16px;">
+      <div class="header-row">
+        <div class="header-row-main">
+          <div class="logo">
+            <img src="CCC 192.png" alt="Crazy Critters Circulation" />
+          </div>
+          <div>
+            <div class="project-pill">
+              <span class="dot"></span>
+              <span>Crazy Critters of Cronos</span>
+            </div>
+            <h1 style="font-size:22px;margin-bottom:2px;">Critters in Circulation</h1>
+          </div>
+        </div>
+      </div>
+
+      <p class="subtitle">
+        Live circulating supply and estimated monthly $MOON royalty per Critter from the 93M MOON vault.
+      </p>
+
+      <div class="value-row" style="margin-top:6px;">
+        <span id="ccc-circulating" class="value" style="font-size:32px;">Loading...</span>
+        <span class="label" style="font-size:14px;">/ 3,000</span>
+      </div>
+
+      <div class="meta-row" style="margin-top:6px;">
+        <span id="ccc-burned">Burned Critters: —</span>
+        <span id="ccc-royalty">Monthly per Critter: — $MOON</span>
+      </div>
+
+      <div class="footer" style="margin-top:10px;">
+        <div>Based on burns to the dedicated burn address and vault APR assumptions.</div>
+        <div>Last updated: <strong><span id="ccc-updated">—</span></strong></div>
+      </div>
+    </div>
+
   </div>
+
+  <!-- Automated Critters circulation & royalty script -->
+  <script>
+    // CONFIG
+    const CCC_INITIAL_SUPPLY = 3000;                     // Total Critters
+    const CCC_BURN_ADDRESS = '0x807D0DE6FE5bf18A82E9B925EEd8fa18e6AD200D';
+
+    // Cronos Explorer-style API (similar to Etherscan)
+    const CRONOS_API = 'https://api.cronoscan.com/api';
+    const CRONOS_API_KEY = ''; // optional
+
+    // Vault constants: 93M MOON, 45% APR, 80% to holders
+    const VAULT_MOON = 93000000;
+    const VAULT_APR = 0.45;
+    const HOLDER_SHARE = 0.8;
+    const MONTHS_PER_YEAR = 12;
+
+    // Fetch how many burn transactions went INTO the burn address
+    async function fetchBurnCount() {
+      const params = new URLSearchParams({
+        module: 'account',
+        action: 'txlist',
+        address: CCC_BURN_ADDRESS,
+        startblock: '0',
+        endblock: '99999999',
+        sort: 'asc'
+      });
+      if (CRONOS_API_KEY) params.append('apikey', CRONOS_API_KEY);
+
+      const res = await fetch(\`\${CRONOS_API}?\${params.toString()}\`);
+      const data = await res.json();
+
+      if (data.status !== '1' || !Array.isArray(data.result)) {
+        console.error('Burn fetch error:', data);
+        throw new Error('Unable to fetch burn tx list');
+      }
+
+      const burnTxs = data.result.filter(
+        (tx) => tx.to && tx.to.toLowerCase() === CCC_BURN_ADDRESS.toLowerCase()
+      );
+      return burnTxs.length;  // each tx = 1 burned Critter in this loop
+    }
+
+    // Calculate MOON per Critter per month
+    function calcMonthlyRoyaltyPerCritter(circulating) {
+      const yearlyVaultYield = VAULT_MOON * VAULT_APR * HOLDER_SHARE;
+      const monthlyVaultYield = yearlyVaultYield / MONTHS_PER_YEAR;
+      return circulating > 0 ? monthlyVaultYield / circulating : 0;
+    }
+
+    // Update the card on the page
+    async function updateCritterCard() {
+      const circEl   = document.getElementById('ccc-circulating');
+      const burnedEl = document.getElementById('ccc-burned');
+      const royEl    = document.getElementById('ccc-royalty');
+      const timeEl   = document.getElementById('ccc-updated');
+
+      try {
+        if (!circEl || !burnedEl || !royEl || !timeEl) return;
+
+        circEl.textContent = 'Loading...';
+        burnedEl.textContent = 'Burned Critters: —';
+        royEl.textContent = 'Monthly per Critter: — $MOON';
+
+        const burnedCount = await fetchBurnCount();
+        const circulating = CCC_INITIAL_SUPPLY - burnedCount;
+        const perCritterMonthly = calcMonthlyRoyaltyPerCritter(circulating);
+
+        burnedEl.textContent = \`Burned Critters: \${burnedCount}\`;
+        circEl.textContent = circulating.toString();
+        royEl.textContent = \`Monthly per Critter: \${perCritterMonthly.toFixed(2)} $MOON\`;
+
+        timeEl.textContent = new Date().toLocaleTimeString();
+      } catch (err) {
+        console.error(err);
+        if (circEl)   circEl.textContent   = 'Error';
+        if (burnedEl) burnedEl.textContent = 'Error loading burned count';
+        if (royEl)    royEl.textContent    = 'Error loading royalty data';
+      }
+    }
+
+    // Initial run + refresh every 5 minutes
+    updateCritterCard();
+    setInterval(updateCritterCard, 5 * 60 * 1000);
+  </script>
 
   <script src="app.js"></script>
 </body>
 </html>
-
