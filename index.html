@@ -331,8 +331,9 @@
     // CONFIG
     const CCC_INITIAL_SUPPLY = 3000;                     // Total Critters
     const CCC_BURN_ADDRESS = '0x807D0DE6FE5bf18A82E9B925EEd8fa18e6AD200D';
+    const CCC_CONTRACT = '0x9b35282393a1560b9c996061eb047702660dbec5';
 
-    // Cronos Explorer API (Cronoscan-style)
+    // Cronos Explorer API (Blockscout-style)
     const CRONOS_API = 'https://cronos.org/explorer/api';
     const CRONOS_API_KEY = 'Zw4oARSY0pEpCT7RqqbKEv7jBslEQDoT';
 
@@ -342,11 +343,12 @@
     const HOLDER_SHARE = 0.8;
     const MONTHS_PER_YEAR = 12;
 
-    // Fetch how many burn transactions went INTO the burn address
+    // Fetch how many NFT transfers went INTO the burn address for this contract
     async function fetchBurnCount() {
       const params = new URLSearchParams({
         module: 'account',
-        action: 'txlist',
+        action: 'tokennfttx',           // NFT transfers, not plain tx
+        contractaddress: CCC_CONTRACT,
         address: CCC_BURN_ADDRESS,
         startblock: '0',
         endblock: '99999999',
@@ -359,13 +361,14 @@
 
       if (data.status !== '1' || !Array.isArray(data.result)) {
         console.error('Burn fetch error:', data);
-        throw new Error('Unable to fetch burn tx list');
+        throw new Error('Unable to fetch NFT transfer list');
       }
 
+      // Each transfer to the burn address = 1 burned critter
       const burnTxs = data.result.filter(
         (tx) => tx.to && tx.to.toLowerCase() === CCC_BURN_ADDRESS.toLowerCase()
       );
-      return burnTxs.length;  // each tx = 1 burned Critter in this loop
+      return burnTxs.length;
     }
 
     // Calculate MOON per Critter per month
@@ -414,4 +417,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
