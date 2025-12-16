@@ -326,16 +326,17 @@
 
   </div>
 
-  <!-- Automated Critters circulation & royalty script -->
+  <!-- Automated Critters circulation & royalty script via Moralis NFT API -->
   <script>
     // CONFIG
-    const CCC_INITIAL_SUPPLY = 3000;                     // Total Critters
-    const CCC_BURN_ADDRESS = '0x807D0DE6FE5bf18A82E9B925EEd8fa18e6AD200D';
-    const CCC_CONTRACT = '0x9b35282393a1560b9c996061eb047702660dbec5';
+    const CCC_INITIAL_SUPPLY = 3000;
+    const CCC_BURN_ADDRESS = '0x807D0DE6FE5bf18A82E9B925EEd8fa18e6AD200D'.toLowerCase();
+    const CCC_CONTRACT = '0x9b35282393a1560b9c996061eb047702660dbec5'.toLowerCase();
 
-    // Cronos Explorer API (Blockscout-style)
-    const CRONOS_API = 'https://cronos.org/explorer/api';
-    const CRONOS_API_KEY = 'Zw4oARSY0pEpCT7RqqbKEv7jBslEQDoT';
+    // Moralis Web3 API
+    const MORALIS_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjI1NTVhMmFiLWM5NDEtNDZmZC1hMmE3LWM0NGE0Y2I3NzNkNCIsIm9yZ0lkIjoiNDg2MzY0IiwidXNlcklkIjoiNTAwMzczIiwidHlwZUlkIjoiZTY5YTk2YTMtMTZmNC00YTlhLWExOTUtZWNhMzllYzc1NzM0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NjU5MDg2MjEsImV4cCI6NDkyMTY2ODYyMX0.Pg8cayLC8-TGvFjzzt3iJcJc4qMhviDwPOl2cNi73E8';
+    // Cronos chain id for Moralis Web3 Data API
+    const MORALIS_CHAIN = 'cronos';
 
     // Vault constants: 93M MOON, 45% APR, 80% to holders
     const VAULT_MOON = 93000000;
@@ -343,42 +344,49 @@
     const HOLDER_SHARE = 0.8;
     const MONTHS_PER_YEAR = 12;
 
-    // Fetch how many NFT transfers went INTO the burn address for this contract
+    // Fetch burned critters using Moralis NFT transfers
     async function fetchBurnCount() {
-      const params = new URLSearchParams({
-        module: 'account',
-        action: 'tokennfttx',           // NFT transfers, not plain tx
-        contractaddress: CCC_CONTRACT,
-        address: CCC_BURN_ADDRESS,
-        startblock: '0',
-        endblock: '99999999',
-        sort: 'asc',
-        apikey: CRONOS_API_KEY
-      });
+      let cursor = null;
+      let totalBurns = 0;
 
-      const res = await fetch(`${CRONOS_API}?${params.toString()}`);
-      const data = await res.json();
+      do {
+        const params = new URLSearchParams({
+          chain: MORALIS_CHAIN,
+          limit: '100',
+          contract_address: CCC_CONTRACT
+        });
+        if (cursor) params.append('cursor', cursor);
 
-      if (data.status !== '1' || !Array.isArray(data.result)) {
-        console.error('Burn fetch error:', data);
-        throw new Error('Unable to fetch NFT transfer list');
-      }
+        const res = await fetch(`https://deep-index.moralis.io/api/v2/nft/${CCC_CONTRACT}/transfers?${params.toString()}`, {
+          headers: {
+            'X-API-Key': MORALIS_API_KEY
+          }
+        });
+        const data = await res.json();
 
-      // Each transfer to the burn address = 1 burned critter
-      const burnTxs = data.result.filter(
-        (tx) => tx.to && tx.to.toLowerCase() === CCC_BURN_ADDRESS.toLowerCase()
-      );
-      return burnTxs.length;
+        if (!Array.isArray(data.result)) {
+          console.error('Moralis NFT error:', data);
+          throw new Error('Unable to fetch NFT transfers');
+        }
+
+        // Count transfers whose to_address is the burn address
+        const burnsHere = data.result.filter(
+          (tx) => tx.to_address && tx.to_address.toLowerCase() === CCC_BURN_ADDRESS
+        ).length;
+        totalBurns += burnsHere;
+
+        cursor = data.cursor || null;
+      } while (cursor);
+
+      return totalBurns;
     }
 
-    // Calculate MOON per Critter per month
     function calcMonthlyRoyaltyPerCritter(circulating) {
       const yearlyVaultYield = VAULT_MOON * VAULT_APR * HOLDER_SHARE;
       const monthlyVaultYield = yearlyVaultYield / MONTHS_PER_YEAR;
       return circulating > 0 ? monthlyVaultYield / circulating : 0;
     }
 
-    // Update the card on the page
     async function updateCritterCard() {
       const circEl   = document.getElementById('ccc-circulating');
       const burnedEl = document.getElementById('ccc-burned');
@@ -409,7 +417,6 @@
       }
     }
 
-    // Initial run + refresh every 5 minutes
     updateCritterCard();
     setInterval(updateCritterCard, 5 * 60 * 1000);
   </script>
