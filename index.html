@@ -417,12 +417,16 @@
         if (royEl)    royEl.textContent    = 'Error loading royalty data';
       }
     }
+    
+<script>
+  updateCritterCard(); // run once on load
+  setInterval(updateCritterCard, 12 * 60 * 60 * 1000); // then every 12 hours
+</script>
 
-    updateCritterCard();
-    setInterval(updateCritterCard, 60 * 60 * 1000);
-  </script>
-
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
+
+    
+
 
