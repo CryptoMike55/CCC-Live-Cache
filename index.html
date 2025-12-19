@@ -186,7 +186,6 @@
 <body>
   <div class="glow-ring"></div>
 
-  <!-- stack container so cards are vertical -->
   <div style="position:relative;z-index:1;width:100%;max-width:900px;display:flex;flex-direction:column;gap:16px;">
 
     <!-- Burn cache card -->
@@ -281,7 +280,7 @@
       </div>
     </div>
 
-    <!-- MOON/WCRO market card (moved to bottom) -->
+    <!-- MOON/WCRO market card -->
     <div class="wrapper" style="padding:16px 18px 12px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
         <div style="display:flex;align-items:center;gap:10px;">
@@ -327,25 +326,20 @@
 
   </div>
 
-  <!-- Automated Critters circulation & royalty script via Moralis NFT API -->
+  <!-- Moralis NFT logic for Critters -->
   <script>
-    // CONFIG
     const CCC_INITIAL_SUPPLY = 3000;
     const CCC_BURN_ADDRESS = '0x000000000000000000000000000000000000dEaD'.toLowerCase();
     const CCC_CONTRACT = '0x9b35282393a1560b9c996061eb047702660dbec5'.toLowerCase();
 
-    // Moralis Web3 API
     const MORALIS_API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjI1NTVhMmFiLWM5NDEtNDZmZC1hMmE3LWM0NGE0Y2I3NzNkNCIsIm9yZ0lkIjoiNDg2MzY0IiwidXNlcklkIjoiNTAwMzczIiwidHlwZUlkIjoiZTY5YTk2YTMtMTZmNC00YTlhLWExOTUtZWNhMzllYzc1NzM0IiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3NjU5MDg2MjEsImV4cCI6NDkyMTY2ODYyMX0.Pg8cayLC8-TGvFjzzt3iJcJc4qMhviDwPOl2cNi73E8';
-    // Cronos chain id for Moralis Web3 Data API
     const MORALIS_CHAIN = 'cronos';
 
-    // Vault constants: 93M MOON, 45% APR, 80% to holders
     const VAULT_MOON = 93000000;
     const VAULT_APR = 0.45;
     const HOLDER_SHARE = 0.8;
     const MONTHS_PER_YEAR = 12;
 
-    // Fetch burned critters using Moralis NFT transfers
     async function fetchBurnCount() {
       let cursor = null;
       let totalBurns = 0;
@@ -370,7 +364,6 @@
           throw new Error('Unable to fetch NFT transfers');
         }
 
-        // Count transfers whose to_address is the burn address
         const burnsHere = data.result.filter(
           (tx) => tx.to_address && tx.to_address.toLowerCase() === CCC_BURN_ADDRESS
         ).length;
@@ -417,17 +410,16 @@
         if (royEl)    royEl.textContent    = 'Error loading royalty data';
       }
     }
-    
-<script>
-  updateCritterCard(); // run once on load
-  setInterval(updateCritterCard, 24 * 60 * 60 * 1000); // then every 24 hours
-</script>
+  </script>
 
-<script src="app.js"></script>
+  <script>
+    // run once on load
+    updateCritterCard();
+    // then every 24 hours
+    setInterval(updateCritterCard, 24 * 60 * 60 * 1000);
+  </script>
+
+  <!-- burn cache + CoinGecko logic -->
+  <script src="app.js"></script>
 </body>
 </html>
-
-    
-
-
-
